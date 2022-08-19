@@ -28,13 +28,16 @@ const App = () => {
     setToggled(toggled);
   };
 
-  const fetchData = (position?: any) => {
+  const fetchData = (
+    position?: GeolocationPosition | undefined,
+    name?: string | undefined
+  ) => {
     axios
       .get(
         `https://api.weatherapi.com/v1/forecast.json?key=yourkey&q=${`${
-          position
+          position !== undefined
             ? position.coords.latitude + " " + position.coords.longitude
-            : input
+            : name
         }`}&days=3&aqi=yes&alerts=no`
       )
       .then((res: any) => {
@@ -54,7 +57,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log(input);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         fetchData(position);
@@ -67,6 +69,10 @@ const App = () => {
         }
       }
     );
+  }, []);
+
+  useEffect(() => {
+    fetchData(undefined, input);
   }, [input]);
 
   return (
